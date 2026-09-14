@@ -2,7 +2,7 @@
 
 A terminal-based manager for **Backhaul, Rathole, and GOST** tunnels on **Ubuntu 22.04 or newer**, **amd64 / x86_64**, with IPv4.
 
-Version **2.5.0** can configure both servers from the Foreign server using five main settings and SSH credentials. Manual setup and manual transfer of the `MULTI2.` connection code remain available.
+Version **2.5.1** can configure both servers from the Foreign server using five main settings and SSH credentials. Manual setup and manual transfer of the `MULTI2.` connection code remain available.
 
 **[Full Persian guide](README.fa.md)** · **[MIT license](LICENSE)** · **[Tunnel engine licenses](THIRD_PARTY_NOTICES.md)**
 
@@ -109,6 +109,21 @@ If all prerequisites are installed, their package download size is zero and APT 
 
 To repeat Iran setup using the current Foreign configuration, open **Foreign tunnel management → `9) Set up Iran via SSH`**. This option uses the manual questions and replacement confirmation; it does not require recreating the Foreign side.
 
+## Ubuntu package manager lock
+
+If `unattended-upgr` holds `/var/lib/dpkg/lock-frontend`, Ubuntu is already installing updates. An `SSH tool installation failed` message comes from installing SSH prerequisites on the **Foreign server**, before the SSH connection to Iran starts.
+
+Version 2.5.1 gives local package installations up to **300 seconds** to acquire the dpkg lock, with additional time for the installation itself. It uses APT's native `DPkg::Lock::Timeout`; it does not remove lock files or stop automatic updates. Repository index locks used by `apt-get update` are separate; if those are busy, let the other APT operation finish and retry.
+
+You can install the SSH prerequisites on Foreign directly:
+
+```bash
+sudo apt-get -o DPkg::Lock::Timeout=300 install -y openssh-client sshpass
+sudo multi-tunnel
+```
+
+Then select **Manage local tunnels → your Foreign tunnel → `9) Set up Iran via SSH`**. The saved Foreign tunnel does not need to be recreated. If the lock is still held after the wait expires, let the update finish and retry. Do not delete dpkg lock files.
+
 ## Manual setup on Iran
 
 If you choose `n` at the end of Foreign setup, run the script on Iran yourself, select `1) Create tunnel`, then `1) Iran`, and enter the complete `MULTI2.` code. You can also save the code in a file and enter `@/root/connection.txt` instead.
@@ -169,7 +184,7 @@ Pressing `Ctrl+C` in the main menu, tunnel selection, management menu, or recove
 
 ## Updating
 
-From versions **2.0, 2.1, 2.2, 2.3, and 2.4**, you can replace the script with the new file or run the new installer. `schema_version: 2` configurations and `MULTI2.` codes remain compatible; updating the manager alone does not require recreating working tunnels. Editing Foreign settings still generates a new connection code that must be applied on Iran.
+From versions **2.0, 2.1, 2.2, 2.3, 2.4, and 2.5.0**, you can replace the script with the new file or run the new installer. `schema_version: 2` configurations and `MULTI2.` codes remain compatible; updating the manager alone does not require recreating working tunnels. Editing Foreign settings still generates a new connection code that must be applied on Iran.
 
 The installer does not automatically migrate old v1 configurations. The installed program is at `/usr/local/lib/multi-tunnel/multi-tunnel.py`, and configurations are in `/etc/multi-tunnel`.
 
