@@ -1,19 +1,22 @@
 # Multi Tunnel
 
-مدیریت تانل‌های **GOST، Backhaul و Rathole** برای Ubuntu 22.04 یا جدیدتر، معماری **amd64 / x86_64** و IPv4.
-نسخهٔ **2.2.0** می‌تواند پس از ساخت تانل روی خارج، نصب و تنظیم سمت ایران را از همان سرور با SSH انجام دهد. اجرای مستقل روی دو سرور و انتقال دستی کد `MULTI2.` نیز همچنان در دسترس است.
-**[راهنمای کامل فارسی](README.fa.md)** · **[مجوز MIT](LICENSE)** · **[مجوز موتورهای تانل](THIRD_PARTY_NOTICES.md)**
+A terminal-based manager for **Backhaul, Rathole, and GOST** tunnels on **Ubuntu 22.04 or newer**, **amd64 / x86_64**, with IPv4.
 
-## نصب از GitHub
+Version **2.5.0** can configure both servers from the Foreign server using five main settings and SSH credentials. Manual setup and manual transfer of the `MULTI2.` connection code remain available.
 
-این دستورها برای نام پیشنهادی مخزن **`YoungDeveloper2025/multi-tunnel`** با شاخهٔ **`main`** هستند. ابتدا فایل‌های این پروژه را در ریشهٔ همان مخزن بارگذاری کنید؛ اگر نام مخزن یا شاخه متفاوت است، نشانی دانلود، `--repo` و `--ref` را متناسب تغییر دهید.
-روی سرور خارج اجرا کنید:
+**[Full Persian guide](README.fa.md)** · **[MIT license](LICENSE)** · **[Tunnel engine licenses](THIRD_PARTY_NOTICES.md)**
+
+## Install from GitHub
+
+These commands assume the proposed repository **`YoungDeveloper2025/multi-tunnel`** and the **`main`** branch. Upload the project files to the root of that repository first. If you use a different repository or branch, update the download URL, `--repo`, and `--ref` accordingly.
+
+Run on the Foreign server:
 
 ```bash
 curl -fsSL --retry 3 https://raw.githubusercontent.com/YoungDeveloper2025/multi-tunnel/main/install.sh -o /tmp/multi-install.sh && sudo bash /tmp/multi-install.sh --repo YoungDeveloper2025/multi-tunnel --ref main && sudo multi-tunnel
 ```
 
-یا همین نصب را در سه مرحله انجام دهید:
+Or run the same installation in three steps:
 
 ```bash
 curl -fsSL --retry 3 https://raw.githubusercontent.com/YoungDeveloper2025/multi-tunnel/main/install.sh -o /tmp/multi-install.sh
@@ -21,111 +24,162 @@ sudo bash /tmp/multi-install.sh --repo YoungDeveloper2025/multi-tunnel --ref mai
 sudo multi-tunnel
 ```
 
-اگر `curl` نصب نیست:
+If `curl` is not installed:
 
 ```bash
 sudo apt-get update
 sudo apt-get install -y curl ca-certificates
 ```
 
-برای اجرای بعدی منو کافی است `sudo multi-tunnel` را بزنید. نصاب فقط مدیر را نصب می‌کند؛ برای ساخت تانل از منو استفاده کنید. نصب از فایل محلی نیز ممکن است:
+To reopen the menu later, run `sudo multi-tunnel`. The installer installs the manager; use the menu to create tunnels.
+
+You can also install from local files:
 
 ```bash
 sudo bash install.sh --local .
 sudo multi-tunnel
 ```
 
-برای اجرای مستقیم بدون نصاب، خود فایل را روی سرور قرار دهید و اجرا کنید:
+To run the script directly without the installer, copy it to the server and run:
 
 ```bash
 sudo python3 multi-tunnel.py
 ```
 
-اگر Python نصب نیست، ابتدا `sudo apt-get install -y python3` را اجرا کنید. دانلود و نصب بسته‌های Ubuntu به دسترسی مخازن Ubuntu نیاز دارد.
+If Python is missing, install it first with `sudo apt-get install -y python3`. Ubuntu package installation requires access to the Ubuntu repositories.
 
-## ساخت تانل روی خارج
+## Create a tunnel on the Foreign server
 
-1. گزینهٔ `1) Create tunnel` را انتخاب کنید.
-2. نقش `2) Foreign` را انتخاب کنید؛ پیش‌فرض نیز `2` است.
-3. نام تانل را وارد کنید؛ Enter نام **`mytunnel`** را انتخاب می‌کند.
-4. موتور و نوع انتقال را با عدد انتخاب کنید. پیش‌فرض موتور `2) Backhaul` و پیش‌فرض نوع انتقال `1) TCP` است.
-5. IP یا دامنهٔ خارج را وارد کنید؛ IP عمومی همین سرور به‌عنوان پیش‌فرض قابل‌تغییر نمایش داده می‌شود. اگر IP وارد کنید، سؤال Cloudflare حذف و مقدار آن خودکار `No` می‌شود. این سؤال فقط برای دامنه نمایش داده می‌شود.
-6. پورت‌ها و تنظیمات تانل را تعیین کنید. پورت‌های پیش‌فرض ورودی ایران `443,2083,2053,1115,1117` هستند. قالب `1115:8080` یعنی پورت `1115` ایران به `8080` خارج متصل شود.
-7. در حالت Cloudflare، گواهی و کلید خصوصی دامنه روی **خارج** را معرفی کنید. این گواهی برای اتصال WSS تانل است؛ GOST سادهٔ TCP/UDP گواهی تانل نمی‌خواهد.
-8. پس از ساخت سمت خارج، کد اتصال در یک خط مستقل نمایش داده می‌شود و سؤال راه‌اندازی ایران از همین سرور می‌آید.
+Select `1) Create tunnel`, then `2) Foreign`. Choose **`1) Automatic`**, the default, or **`2) Manual`**.
 
-تمام سؤال‌ها با فاصله از متن اطراف نمایش داده می‌شوند. منوهای معمول عددی‌اند و Enter پیش‌فرض نمایش‌داده‌شده را انتخاب می‌کند. فقط تأیید راه‌اندازی ایران و تأیید جایگزینی تانل هم‌نام، **`y` یا `n` بدون پیش‌فرض** می‌خواهند؛ پاسخ دیگر یا Enter باعث تکرار سؤال می‌شود.
+### Automatic mode
 
-## راه‌اندازی خودکار ایران با SSH
+The five main settings are requested in this order:
 
-در سؤال پایان ساخت خارج، `y` را وارد کنید. به‌ترتیب این موارد پرسیده می‌شوند:
+| Order | Setting | Default |
+|---|---|---|
+| `1` | Foreign IP address or domain | This server's detected public IP; editable |
+| `2` | Iran server IPv4 address | No default |
+| `3` | Tunnel engine: `1` Backhaul, `2` Rathole, `3` GOST | `1` — Backhaul |
+| `4` | Transport type, selected from the engine's numbered list | `1` — TCP; for GOST with Cloudflare, `3` — WS |
+| `5` | Download Ubuntu packages using Foreign internet through SSH? | `y`; press Enter to accept |
 
-| ورودی | پیش‌فرض |
+If you enter an IP address, the Cloudflare question is skipped. If you enter a domain, an additional question asks whether the Cloudflare orange proxy is enabled.
+
+After these settings, enter the Iran SSH port, default `22`, and the `root` password, which is hidden while typing. Pressing Enter accepts a displayed default. The Iran IP address and password must be supplied.
+
+The script checks SSH access and Iran prerequisites, then configures both servers and tests the tunnel. It uses defaults for the name, ports, and advanced settings:
+
+- The initial name is `mytunnel`. If that name already exists on either server, a confirmation asks whether to delete and recreate that server's tunnel, default `y`. Press `y` or Enter to replace it, or `n` to preserve it and use an available name such as `mytunnel-2`. Invalid responses repeat the question.
+- Your selected transport is preserved. The default is TCP, except **GOST with Cloudflare**, which defaults to WS. With Cloudflare enabled, Backhaul and Rathole carry the selected inner transport through an outer GOST WSS connection. Selecting TCP does not disable Cloudflare.
+- Default Iran listening ports and Foreign destination ports are `443,2083,2053,1115,1117`. If an Iran listening port is busy, a free port is selected and the final mapping is displayed. Use those final Iran ports in client configurations.
+- The Foreign transport port, when required, defaults to `8443`. If it is unavailable, another free port is selected. Automatic Cloudflare alternatives are `2087` and `2096`.
+- For Cloudflare, the script reuses a valid certificate and key in `/etc/letsencrypt/live/DOMAIN/`. If they are missing or invalid, Certbot requests a certificate without asking again for the domain or file paths. DNS and HTTP validation must reach this Foreign server, and port `80` must be available. The script does not stop another service to free that port. Cloudflare SSL must use `Full (strict)`.
+
+For GOST with the orange proxy enabled, all transport options remain visible, but this implementation can pass through Cloudflare only with WS. Selecting another transport offers a direct connection to the Foreign server's actual IPv4 address, with confirmation defaulting to `n`. Only explicit approval replaces the domain with that IP and disables Cloudflare for this tunnel, while retaining the selected transport. If the actual IP was not detected, the script asks for it. Declining returns to transport selection, where you can choose WS.
+
+Automatic mode displays the required package download size and applies the default approval `y` without another size confirmation. Complete cached packages are excluded from the download size.
+
+Replacement uses a temporary backup on each server. After successful local setup, the old manager-owned tunnel files and services are removed. If that local operation fails, the previous configuration is restored. If Foreign setup succeeds but the Iran stage fails, the Foreign tunnel remains available for retry; rollback is not coordinated across both servers.
+
+### Manual mode
+
+The script asks for the tunnel name, default `mytunnel`, engine, transport, IP or domain, ports, and advanced settings. The default engine is Backhaul and the default transport is TCP. The detected Foreign public IP is the default endpoint; an IP address skips the Cloudflare question.
+
+A port mapping such as `1115:8080` forwards Iran port `1115` to Foreign port `8080`.
+
+For Cloudflare, provide the paths to the existing certificate and private key on the **Foreign server**. This certificate secures the tunnel's WSS connection. Simple GOST TCP/UDP forwarding does not require a tunnel certificate.
+
+After Foreign setup, the connection code is displayed on its own line. The script asks whether to configure Iran from this server. This question accepts only `y` or `n`, with no default. Choose `n` to import the code manually on Iran. Choose `y` to enter the Ubuntu package download route, Iran IP, SSH port, default `22`, and hidden root password.
+
+If the tunnel name already exists on Iran, manual setup asks whether to replace it, with no default:
+
+- **`y`** replaces the tunnel under the same local name. If startup or the connection test fails, the previous configuration is restored.
+- **`n`** preserves the old tunnel and selects an available name such as `mytunnel-2`. Busy Iran listening ports are also reassigned, and the final mapping is displayed.
+
+Questions have spacing above and below them, and standard menus use numbers. In the manual flow, Iran setup, package download routing, and duplicate-name replacement require `y/n` without a default; Enter or an invalid answer repeats the question. The package download size confirmation for Foreign internet defaults to `y`. Selecting `n` there cancels further Iran setup while preserving the Foreign tunnel.
+
+## SSH connection and package downloads on Iran
+
+The Iran server must already accept password-based SSH login for **root**. The manager does not change SSH settings, send an SSH login key to Iran, or save the password in a file. The host key is recorded on the first connection; a change to that recorded key blocks the connection.
+
+The manager and required binaries are transferred from Foreign to Iran and verified with SHA256. Choosing `y` for the download route sends Iran's APT requests through the same SSH session using Foreign's internet connection; `n` uses Iran's direct internet connection. With `y`, Iran does not need direct access to Ubuntu repositories or GitHub; Foreign must be able to reach the download sources, and Iran's SSH server must allow port forwarding. No permanent proxy configuration is written on Iran.
+
+If all prerequisites are installed, their package download size is zero and APT is not run for them. If packages are missing, repository indexes are fetched first, then the required package download size is displayed, accounting for dependencies and cached packages. Repository indexes and tunnel binaries have separate download sizes; indexes may be fetched before the package size is announced. APT targets only missing prerequisites, although a required dependency may need an upgrade. This method does not create an offline `.deb` archive.
+
+To repeat Iran setup using the current Foreign configuration, open **Foreign tunnel management → `9) Set up Iran via SSH`**. This option uses the manual questions and replacement confirmation; it does not require recreating the Foreign side.
+
+## Manual setup on Iran
+
+If you choose `n` at the end of Foreign setup, run the script on Iran yourself, select `1) Create tunnel`, then `1) Iran`, and enter the complete `MULTI2.` code. You can also save the code in a file and enter `@/root/connection.txt` instead.
+
+The connection code contains authentication credentials; do not publish it in a GitHub repository. The Foreign certificate's private key is not included in the connection code and is not transferred to Iran.
+
+## Transport types
+
+| Engine | Transport types |
 |---|---|
-| IP سرور ایران | ندارد |
-| پورت SSH ایران | `22` |
-| رمز حساب `root` ایران | ندارد؛ هنگام ورود مخفی است |
+| Backhaul | TCP, UDP, WS, WSMux, TCPMux |
+| Rathole | TCP, WS |
+| GOST | TCP, UDP, WS, gRPC, TCPMux |
 
-سرور ایران باید از قبل ورود SSH با رمز برای root را بپذیرد. اسکریپت تنظیمات SSH سرور را تغییر نمی‌دهد. رمز در فایل تنظیمات تانل ذخیره نمی‌شود. کلید میزبان SSH در اولین اتصال ثبت می‌شود و اگر کلید ثبت‌شده تغییر کند، اتصال متوقف می‌شود.
-مدیر و باینری‌های موردنیاز موتور تانل از خارج به ایران منتقل و با SHA256 بررسی می‌شوند؛ بسته‌های وابسته با APT روی **ایران** نصب می‌شوند. سپس کد اتصال خودکار اعمال می‌شود، فایروال و سرویس‌ها تنظیم می‌شوند و نتیجهٔ آزمون اتصال از ایران در ترمینال خارج نمایش داده می‌شود. ایران برای باینری‌های منتقل‌شده به GitHub نیاز ندارد، اما برای نصب بسته‌های Ubuntu باید به مخازن Ubuntu دسترسی داشته باشد. نصب آفلاین `.deb` در این نسخه وجود ندارد.
-اگر نام تانل روی ایران تکراری باشد:
+In this project's design, Backhaul and Rathole use an additional **GOST TLS/WSS** transport so that the connection endpoint remains on Foreign. Backhaul UDP traffic also passes through a reliable stream. Simple GOST TCP/UDP forwarding connects directly from Iran to the destination port on Foreign.
 
-- پاسخ **`y`**: تانل در همان نام محلی جایگزین می‌شود؛ در صورت شکست راه‌اندازی یا آزمون، نسخهٔ قبلی بازیابی می‌شود.
-- پاسخ **`n`**: تانل قبلی حفظ و نام آزاد مانند `mytunnel-2` انتخاب می‌شود. اگر پورت ورودی ایران اشغال باشد، پورت آزاد انتخاب و نگاشت نهایی نمایش داده می‌شود؛ برای اتصال کاربران از پورت نمایش‌داده‌شدهٔ ایران استفاده کنید.
+## Management and connection tests
 
-برای تکرار راه‌اندازی بدون ساخت دوبارهٔ سمت خارج، به **مدیریت تانل خارج → `9) Set up Iran via SSH`** بروید.
+Main menu: `1` create, `2` manage tunnels, `3` recover interrupted operations, `4` get a certificate, `5` install the latest `mhsanaei/3x-ui`, `6` install the latest `alireza0/x-ui`, and `0` exit.
 
-## راه‌اندازی دستی ایران
+The management menu provides status, connection tests, editing, deletion, restart, and logs. Tunnels are grouped in the order Backhaul, Rathole, and GOST, then sorted by name within each group. On Foreign, you can also display the connection code and set up Iran over SSH.
 
-اگر در سؤال پایان ساخت خارج `n` را انتخاب کنید، اسکریپت را خودتان روی ایران اجرا کنید، `1) Create tunnel` و سپس `1) Iran` را بزنید و کد کامل `MULTI2.` را وارد کنید. کد را می‌توان در فایل قرار داد و به‌جای آن `@/root/connection.txt` وارد کرد.
-کد اتصال اطلاعات احراز هویت دارد؛ آن را در مخزن GitHub قرار ندهید. کلید خصوصی گواهی خارج جزو کد اتصال نیست و به ایران منتقل نمی‌شود.
-
-## نوع‌های انتقال
-
-| موتور | نوع انتقال |
-|---|---|
-| GOST | TCP، UDP، WS، gRPC، TCPMux |
-| Backhaul | TCP، UDP، WS، WSMux، TCPMux |
-| Rathole | TCP، WS |
-
-در طراحی این پروژه، Backhaul و Rathole از انتقال کمکی **GOST TLS/WSS** استفاده می‌کنند تا آدرس اتصال روی سرور خارج بماند. UDP مربوط به Backhaul نیز از یک جریان قابل‌اعتماد عبور می‌کند. GOST سادهٔ TCP/UDP از ایران مستقیم به پورت مقصد خارج متصل می‌شود.
-
-## مدیریت و تست
-
-منوی اصلی: `1` ساخت، `2` مدیریت تانل‌ها، `3` بازیابی عملیات قطع‌شده، `4` دریافت گواهی، `0` خروج.
-منوی مدیریت امکان مشاهدهٔ وضعیت، تست، ویرایش، حذف، restart و logs را دارد. روی خارج، نمایش کد اتصال و راه‌اندازی ایران با SSH نیز در دسترس است.
-در ایران گزینهٔ **`2) test tunnel connection`** تست زنده انجام می‌دهد و یکی از پیام‌های زیر را نمایش می‌دهد:
+On Iran, **`2) test tunnel connection`** runs a live test and displays one of these messages:
 
 ```text
 Tunnel connection successful.
 Tunnel connection unsuccessful.
 ```
 
-آزمون، مسیر تانل را بررسی می‌کند؛ سلامت کانفیگ VLESS یا سرویس Xray باید جداگانه بررسی شود. وضعیت `active` سرویس‌ها به‌تنهایی موفقیت ارتباط را نشان نمی‌دهد. گزینهٔ تست معمول روی خارج وضعیت محلی و راهنمای تست از ایران را نشان می‌دهد؛ راه‌اندازی SSH تست را از راه دور روی ایران اجرا می‌کند.
+The test checks the tunnel path; VLESS configuration and Xray service health must be checked separately. An `active` service state alone does not confirm successful connectivity. The regular test option on Foreign shows local status and instructions for testing from Iran; SSH setup runs the test remotely on Iran.
 
-## دریافت گواهی
+## Getting a certificate
 
-گزینهٔ **`4) get cert for sub domain`** در منوی اصلی، Certbot را نصب و برای دامنهٔ واردشده گواهی درخواست می‌کند. همین گزینه در مدیریت تانل نیز وجود دارد.
-اعتبارسنجی باید به همین سرور برسد و پورت ورودی TCP `80` آزاد و قابل‌دسترسی باشد. پس از موفقیت، مسیرها نمایش داده می‌شوند:
+The main menu's **`4) get cert for sub domain`** option installs Certbot and requests a certificate for the domain you enter. This option is also available in tunnel management.
+
+Validation requests must reach this server, and inbound TCP port `80` must be available and reachable. After successful issuance, the paths are displayed:
 
 ```text
 /etc/letsencrypt/live/tunnel.example.com/fullchain.pem
 /etc/letsencrypt/live/tunnel.example.com/privkey.pem
 ```
 
-برای Cloudflare، دامنه را به IP خارج متصل کنید و SSL را روی `Full (strict)` قرار دهید. گواهی باید دامنهٔ تانل را پوشش دهد. جزئیات صدور، تمدید و تنظیم Cloudflare در [راهنمای فارسی](README.fa.md) آمده است.
+For Cloudflare, point the domain to Foreign's IP and set SSL to `Full (strict)`. The certificate must cover the tunnel domain. Certificate issuance, renewal, and Cloudflare configuration are explained in the [Persian guide](README.fa.md).
 
-## به‌روزرسانی
+## Panel installation
 
-از نسخه‌های **2.0 و 2.1** می‌توانید فایل جدید را جایگزین یا نصاب جدید را اجرا کنید. تنظیمات `schema_version: 2` و کدهای `MULTI2.` سازگار می‌مانند؛ به‌روزرسانی مدیر به‌تنهایی نیازمند ساخت مجدد تانل‌های سالم نیست. ویرایش تنظیمات سمت خارج همچنان کد اتصال جدید می‌سازد و باید روی ایران اعمال شود.
-نصاب برای تنظیمات قدیمی v1 مهاجرت خودکار انجام نمی‌دهد. برنامهٔ نصب‌شده در `/usr/local/lib/multi-tunnel/multi-tunnel.py` و تنظیمات در `/etc/multi-tunnel` هستند.
+In the main menu, option `5` installs the latest `mhsanaei/3x-ui`, and option `6` installs the latest `alireza0/x-ui`. In Foreign tunnel management, these are options `10` and `11`; in Iran tunnel management, they are `8` and `9`.
 
-## بررسی کد
+The selected option downloads the project's official installer from its `master` branch and runs it without specifying a version; the official installer determines the latest release. Installation takes place on **the server where the menu is running**. To install a panel on Foreign, open the menu on Foreign. Usually, you only need one of these panels: both use the `x-ui` service name and paths and are not designed to coexist on the same server. Installing another panel may modify an existing installation.
+
+Installer sources: [mhsanaei/3x-ui](https://github.com/mhsanaei/3x-ui/blob/master/install.sh) and [alireza0/x-ui](https://github.com/alireza0/x-ui/blob/master/install.sh). The panel menu does not automatically install the panel on Iran, and the temporary APT route used for Iran setup does not apply to panel installation.
+
+## Progress and cancellation
+
+File downloads and transfers to Iran display the amount transferred and a progress percentage; transferred files are verified before success is confirmed. APT stages also display their progress. When a stage's total size is not known in advance, activity is shown instead of a fabricated overall percentage or remaining time.
+
+Pressing `Ctrl+C` in the main menu, tunnel selection, management menu, or recovery selection exits the program completely without displaying the menu again. While answering configuration questions or running an operation, `Ctrl+C` cancels that operation and returns to the menu after cleanup. The temporary SSH connection and download route are closed. Cancellation does not uninstall packages already installed or undo changes made by a panel installer; after interrupting APT, you may need to check the package state or rerun installation. Tunnel configuration recovery uses the existing recovery mechanism for that operation.
+
+## Updating
+
+From versions **2.0, 2.1, 2.2, 2.3, and 2.4**, you can replace the script with the new file or run the new installer. `schema_version: 2` configurations and `MULTI2.` codes remain compatible; updating the manager alone does not require recreating working tunnels. Editing Foreign settings still generates a new connection code that must be applied on Iran.
+
+The installer does not automatically migrate old v1 configurations. The installed program is at `/usr/local/lib/multi-tunnel/multi-tunnel.py`, and configurations are in `/etc/multi-tunnel`.
+
+## Code checks
 
 ```bash
 bash -n install.sh
 python3 -m unittest discover -s tests -v
 ```
 
-آزمون‌های خودکار جای آزمایش اتصال روی دو VPS واقعی ایران و خارج را نمی‌گیرند؛ در این آزمون‌ها نصب واقعی APT، تغییر فایروال سرور یا صدور گواهی واقعی انجام نمی‌شود. جزئیات آزمون محلی موتورهای اصلی در [راهنمای فارسی](README.fa.md) آمده است.
-Smite الهام‌بخش قابلیت‌های درخواستی بوده است؛ سورس آن در این پروژه کپی نشده است. این پروژه مستقل است و موتورهای دانلودشده مجوزهای خودشان را دارند.
+Automatic setup also shows progress for each stage; the progress bar for one file download or transfer does not represent overall setup progress across both servers. Automated tests do not replace connection testing on two real Iran and Foreign VPSs; these tests do not perform actual APT installation, change a server's firewall, or issue a real certificate. Details of local engine testing are in the [Persian guide](README.fa.md).
+
+Smite inspired the requested features; its source code was not copied into this project. This is an independent project, and downloaded engines retain their own licenses.
